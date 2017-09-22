@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../chartsjs/line.js"></script>
+    <script src="../js/data-request.js"></script>
+</head>
+<style>
+    .infoForm #charts {
+        height: 70%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #charts1 {
+        width: 100%;
+        height: 30%;
+    }
+
+    ul {
+        list-style: none;
+    }
+    #charts1 {
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap:wrap;
+        color: #fff;
+    }
+    #charts1 li {
+        width: 100%;
+        font-size: 18px;
+        display: -webkit-flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    #charts1 li .num {
+        font-size: 25px;
+    }
+    #charts1 li .info {
+        font-size: 15px;
+    }
+
+    #charts1 li span{
+        width: 50%;
+        flex-wrap: wrap;
+    }
+    #charts1 li span:last-child {
+        width: 50%;
+    }
+</style>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class="icon"></i>
+            <span class="h-Title">全省上网（人次）</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+
+        <ul id="charts1">
+            <li><span class="info"></span><span class="num"></span></li>
+        </ul>
+        <!--图标部分 end-->
+    </div>
+</div>
+</body>
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        data: {
+            xAxis: ['1','2','3','4','5','6','7','8'],
+            showData: {
+                'value':[12417, 13264, 12532, 14177, 12135, 11611, 12474,13566]
+            }
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+
+    var colors = ['#5793f3', '#d14a61', '#675bba'];
+
+    var option = {
+        color: colors,
+        "title": {
+            "text": ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: {
+            top: '10%',
+            right: '5%',
+            bottom: '5%',
+            left: '0%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                },
+                splitLine: {
+                    show:true,
+                    lineStyle: {
+                        color: "rgb(48,66,88)",
+                        type: "dashed",
+                        width:'1'
+                    }
+                },
+                data: json.data.xAxis
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                position: 'left',
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value}'
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: "rgb(48,66,88)",
+                        type: "dashed",
+                        width:'1'
+                    }
+                }
+            }
+        ],
+        series: []
+    };
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+
+
+    function initHtml(changeObj,obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        for(var item in json.showData) {
+            var data = json.showData[item]
+            for(var i=data.length;i<json.xAxis.length;i++) {
+                data.push('')
+            }
+        }
+        var Item = function(){
+            return {
+                type:'line',
+                smooth: false,
+                showSymbol: false,
+                itemStyle: {
+                    normal: {
+                        label : {
+                            show: true,
+                            textStyle: {
+                                color: '#fff',
+                                fontSize:12
+                            }
+                        },
+                        areaStyle: {
+                            type: 'default',
+                            color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: 'rgba(5,119,255,0.8)'},
+                                        {offset: 0.5, color: 'rgba(5,119,255,0.5)'},
+                                        {offset: 0.9, color: 'rgba(5,119,255,0.2)'}
+                                    ]
+                            )
+                        },
+                        color: '#63DBEC'
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        width:1,
+                        color:'rgb(55,158,218)'
+                    }
+                },
+                data:[]
+            }
+        };
+        json.xAxis = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+        var sumValue = 0;
+        var xAxisData = json.xAxis;
+        var showData = json.showData;
+        var Series = [];
+        for(var m in showData){
+            var it = new Item();
+            it.name = m;
+            it.data = showData[m];
+            for(var n=it.data.length;n<xAxisData.length;n++) {
+                it.data.push('');
+            }
+            Series.push(it);
+        }
+        option.series = Series;
+        option.xAxis[0].data = xAxisData;
+        for(var j=0;j<json.showData.value.length;j++)  {
+            sumValue+=json.showData.value[j];
+        }
+        $('.info').text('总上网（人次）');
+        $('.num').text(toThousands(sumValue));
+        myChart.setOption(option);
+    }
+
+
+    function toThousands(num) {
+        var num = (num || 0).toString(), result = '';
+        while (num.length > 3) {
+            result = ',' + num.slice(-3) + result;
+            num = num.slice(0, num.length - 3);
+        }
+        if (num) {
+            result = num + result;
+        }
+        return result;
+    }
+
+
+    mystartInterval({id: 1, code: ""});
+</script>
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/data-request.js"></script>
+</head>
+<style>
+    .infoForm #charts {
+        height: 80%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    ul {
+        list-style: none;
+    }
+    #charts {
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap:wrap;
+        color: #fff;
+    }
+    #charts li {
+        width: 100%;
+        font-size: 18px;
+        display: -webkit-flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    #charts li .num {
+        font-size: 25px;
+    }
+
+    #charts li span{
+        width: 100%;
+        flex-wrap: wrap;
+    }
+</style>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class="icon"></i>
+            <span class="h-Title">网吧统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <ul id="charts">
+        </ul>
+        <!--图标部分 end-->
+    </div>
+</div>
+</body>
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        data: {
+            infos: [
+                {name:'网吧统计',value:9207}
+            ]
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+
+    var colors = ['#1E90FF','#0000FF','#87CEFA'];
+    function initHtml(changeObj,obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        // 详细信息
+        var infos = json.infos;
+        var htmlInfo = '';
+        for(var i=0;i<infos.length;i++) {
+            htmlInfo +='<li><span class="num">'+infos[i].value.toLocaleString()+'</span></li>'
+        }
+        $('#charts').html(htmlInfo);
+    }
+
+
+
+    mystartInterval({id: 1, code: ""});
+
+</script>
+
+</html>

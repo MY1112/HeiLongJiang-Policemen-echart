@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src='../chartsjs/uchartlib.js'></script>
+    <script src="../js/data-request.js"></script>
+</head>
+<style>
+    .infoForm #charts {
+        height: 80%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    ul {
+        list-style: none;
+    }
+    #charts {
+        float: left;
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-around;
+        align-items: center;
+        color: #fff;
+    }
+    #charts li {
+        width: 50%;
+        font-size: 16px;
+    }
+
+    #charts li .num {
+        margin-top: 10px;
+        font-size: 25px;
+    }
+
+    #charts li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap:wrap;
+    }
+
+    #charts li span{
+        width: 80%;
+        flex-wrap: wrap;
+    }
+
+    #charts .icon1 {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        background: url('../images/ico_02.png') no-repeat;
+        -webkit-background-size:100% 100%;
+    }
+
+</style>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title">涉稳类型</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <ul id="charts">
+        </ul>
+        <!--图标部分 end-->
+    </div>
+</div>
+
+<script>
+
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "post",
+        url: "http://192.168.1.124:1532/rest/screen/involvingsteady",
+        data: JSON.stringify({"type":"3","code":""}),
+        dataType: "JSON"
+    };      // ajax请求参数
+    var json = {
+        "data":{
+            "群体上访":153016,
+            "个体上访":526074
+        },
+        "message" : {},
+        "success" : true
+    };
+
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(data);
+            });
+        }else{
+            //测试数据
+            initHtml(json);
+        }
+    }
+
+    function initHtml(obj) {
+        if(obj == null && obj == undefined) {
+//            alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+
+        var htmlInfo = '';
+        for(var i in json) {
+            htmlInfo +='<li><i class="icon1"></i><span class="info">'+ i +'</span><span class="num">'+json[i].toLocaleString()+'</span></li>'
+        }
+        $('#charts').html(htmlInfo);
+
+    }
+
+
+    mystartInterval({id: 1, code: ""});
+</script>
+</body>
+</html>

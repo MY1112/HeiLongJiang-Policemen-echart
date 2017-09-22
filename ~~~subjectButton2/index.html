@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>subjectButton</title>
+    <script src="jquery-1.7.1.min.js"></script>
+</head>
+<style>
+    .select {
+        width: 100%;
+        top: 10px;
+       text-align: center;
+    }
+
+    .select .liMenu{
+        cursor: default;
+        border:0;
+        padding: 2px 10px;
+        height: 33px;
+        line-height: 33px;
+        background-image: url(resource/bg_02.png);
+        background-size: 100% 100%;
+        color: #fff;
+    }
+
+    .select .liMenu:hover{
+        cursor: default;
+        border:0;
+        padding: 2px 10px;
+        height: 33px;
+        line-height: 33px;
+        background-image: url(resource/bg_01.png);
+        color: #fff;
+    }
+
+    .select .model {
+        margin-left: 20px;
+        /*height: 150px;*/
+        display: inline-block;
+    }
+    .select ul{
+        margin: 0;
+        height: 100%;
+        list-style-type:none;
+    }
+    .select ul li{
+        border:solid 1px;
+        font-size: 12px;
+    }
+    .liShow{
+        background-color: #1997E1;
+    }
+    .liHide {
+        background-color: #1997E1;
+    }
+    .RadioButton {
+        border-top: 0;
+        height: 24px;
+        line-height: 24px;
+        z-index: 9999;
+    }
+    .RadioButton:hover {
+        background-color: #004A6D;
+    }
+</style>
+<body>
+<div id="subjectButton">
+    <div class="select">
+    </div>
+</div>
+</body>
+<script>
+
+    var json = {
+        "type": 1,
+        "config": {
+            "sub1": {
+                "name": '主题一',
+                "subjectValue": 1,
+                "width": 100,
+                "secondSubject": {
+                    "sec1": {
+                        "name": '二级一',
+                        "subjectValue": 21,
+                        "width": 80
+                    },
+                    "sec2": {
+                        "name": '二级二',
+                        "subjectValue": 22,
+                        "width": 80
+                    }
+                }
+            },
+            "sub2": {
+                "name": '主题二',
+                "subjectValue": 2,
+                "width": 100,
+                "secondSubject": {
+                    "sec1": {
+                        "name": '2二级一',
+                        "subjectValue": 21,
+                        "width": 80
+                    },
+                    "sec2": {
+                        "name": '2二级二',
+                        "subjectValue": 22,
+                        "width": 80
+                    }
+                }
+            },
+            "sub3": {
+                "name": '主题三',
+                "subjectValue": 3,
+                "width": 100,
+                "secondSubject": {}
+            },
+            "sub4": {
+                "name": '主题四',
+                "subjectValue": 4,
+                "width": 100,
+                "secondSubject": {}
+            }
+        }
+    };
+
+    var secondButtonList = {};
+    var secondButtonHtmlList = {};
+
+    function initHtml(obj) {
+        var json = null;
+        json = obj.config;
+
+//        var firstNum = Object.getOwnPropertyNames(json).length;
+        var html = '';
+        var html2 = '';
+        for(var item in json) {
+            var html3 = '';
+            var html4 = '';
+            var secondJson = json[item].secondSubject;
+            html += '<div class="model"><ul>'+
+                    '<li class="liMenu" onclick="runPage('+json[item].subjectValue+')">'+json[item].name+'</li>'+
+                    '<div id="select_button'+json[item].subjectValue+'" class="liHide">'+
+                    '</div>'+
+                    '</ul></div>';
+            for(var info in secondJson) {
+                html3 += '<li id="'+json[item].name+secondJson[info].subjectValue+'" class="RadioButton" onclick="changeType('+secondJson[info].subjectValue+','+json[item].name+');">'+secondJson[info].name+'</li>'
+            }
+            secondButtonHtmlList[json[item].subjectValue] = html3;
+        }
+        $(".select").append(html);
+        for(var m in secondButtonHtmlList) {
+            $('#select_button'+m).append(secondButtonHtmlList[m]);
+            $("#select_button"+m).hide(0);
+        }
+    }
+
+    function changeType(e,subjectName) {
+        hide(e)
+    }
+    var nextState = 1;
+    function runPage(e) {
+        switch (nextState) {
+            case 1:
+                $("#select_button"+e).attr('class', 'liShow');
+                $("#select_button"+e).slideDown(300);
+                nextState = 0;
+                break;
+            case 0:
+                hide(e);
+        }
+    }
+    function hide(e) {
+        $("#select_button"+e).attr('class', 'liHide');
+        $("#select_button"+e).slideUp(300);
+        nextState = 1;
+    }
+
+
+
+    initHtml(json);
+
+</script>
+</html>

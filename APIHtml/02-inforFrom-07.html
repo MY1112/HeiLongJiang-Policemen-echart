@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>02-弹窗</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../chartsjs/pie1.js"></script>
+    <script src="../js/data-request.js"></script>
+    <style>
+        body,html {
+            background-color: rgba(0,80,149,0.5);
+        }
+        .projectBox {
+            border: 1px solid rgb(39,105,164);
+        }
+        .infoForm .nav .bottomLine {
+            width: 90%;
+            height: 2px;
+            margin-top: 9px;
+            background-color: #03DFEA;
+        }
+
+        #charts #lines {
+            height: 95%;
+            width: 100%;
+        }
+
+        #charts #lines {
+            list-style: none;
+        }
+
+        #lines li{
+            width: 100%;
+        }
+
+        #charts1 {
+            height: 70%;
+        }
+
+        #charts2 {
+            height: 30%;
+        }
+
+        #charts2 ul {
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            list-style: none;
+        }
+        #charts2 ul {
+            float: left;
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-around;
+            align-items: center;
+            color: #fff;
+        }
+        #charts2 li {
+            width: 50%;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        #charts2 li .num {
+            margin-top: 10px;
+            font-size: 25px;
+            color: #ffffff;
+        }
+
+        #charts2 li {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap:wrap;
+        }
+
+        #charts2 li span{
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title"></span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts">
+            <ul id="lines">
+                <li id="charts1"></li>
+                <li id="charts2">
+                    <ul>
+                        <li><span id="info1" class="info"></span><span id="num1" class="num"></span></li>
+                        <li><span id="info2" class="info"></span><span id="num2" class="num"></span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!--图标部分 end-->
+        <!--<i class="item left-top"></i>-->
+        <!--<i class="item left-bottom"></i>-->
+        <!--<i class="item right-top"></i>-->
+        <!--<i class="item right-bottom"></i>-->
+    </div>
+</div>
+
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        data: {
+            '哈尔滨市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '齐齐哈尔市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1332,1331,1323,1314,1379,1437,1364,1373],
+                    "旅店数量": 621
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1531,1423,1614,1779,1737,1764,1773],
+                    "网吧数量": 973
+                }
+            },
+            '鸡西市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '鹤岗市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '双鸭山市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '大庆市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '伊春市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '佳木斯市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '抚远县': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '七台河市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '牡丹江市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '绥芬河市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '黑河市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '绥化市': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            },
+            '大兴安岭地区': {
+                "旅店": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1342,1431,1423,1314,1379,1437,1364,1373],
+                    "旅店数量": 651
+                },
+                "网吧": {
+                    "xAxis": [1,2,3,4,5,6,7,8],
+                    "yAxis": [1642,1631,1523,1614,1779,1737,1764,1773],
+                    "网吧数量": 953
+                }
+            }
+        },
+        "message" : {},
+        "success" : true
+    };
+    var cityCode = {
+        "101201010000": "哈尔滨市",
+        "101201020000": "齐齐哈尔市",
+        "101201030000": "牡丹江市",
+        "101201040000": "佳木斯市",
+        "101201050000": "大庆市",
+        "101201060000": "伊春市",
+        "101201070000": "鸡西市",
+        "101201080000": "鹤岗市",
+        "101201090000": "双鸭山市",
+        "101201100000": "七台河市",
+        "101201110000": "绥化市",
+        "101201120000": "黑河市",
+        "101201130000": "大兴安岭地区",
+        "101201150000": "绥芬河市",
+        "101201160000": "抚远县"
+    };
+    var  populationType = {
+        '1': '旅店',
+        '2': '网吧'
+    };
+    var id = null;
+    function mystartInterval(obj) {
+        if(ajax) {
+            if (obj == null && obj == undefined) {
+                //alert('数据不能为空');
+                return false;
+            }
+            var data = {'type': '5'};
+            var newObj = obj;
+            data.code = newObj.code;
+            options.data = JSON.stringify(data);
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(data);
+            });
+        }else{
+            //测试数据
+            var parseObj = obj;
+            id = parseObj.id;
+            var caption = cityCode[parseObj.code];
+            var cityObj = json.data[caption];
+            var typeObj = cityObj[populationType[id]]
+            var data = {};
+            var a ={};
+            var b = {};
+            a[populationType[id]] = typeObj;
+            b[caption] = a;
+            data.data = b;
+            initHtml(data);
+        }
+    }
+
+
+    var colors = ['#5793f3', '#d14a61', '#675bba'];
+    var option = {
+        color: colors,
+        "title": {
+            "text": ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: {
+            top: '10%',
+            right: '5%',
+            bottom: '5%',
+            left: '0%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                axisTick: {
+                    alignWithLabel: true
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                },
+                splitLine: {
+                    show:true,
+                    lineStyle: {
+                        color: "rgb(48,66,88)",
+                        type: "dashed",
+                        width:'1'
+                    }
+                },
+                data: json.data.xAxis
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                position: 'left',
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value}'
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: "rgb(48,66,88)",
+                        type: "dashed",
+                        width:'1'
+                    }
+                }
+            }
+        ],
+        series: []
+    };
+    var chart = document.getElementById('charts1');
+    var myChart = echarts.init(chart);
+
+    function initHtml(obj) {
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        var json1 = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data;
+            json1 = cahngeData();
+        } else {
+            json = obj.data;
+            json1 = cahngeData();
+        }
+        function cahngeData() {
+            var typeObj = {};
+            var parseObj = json;
+            if(id == 1) {
+                for(var caption in parseObj) {
+                    $(".h-Title").text(caption+"入住量（人次）");
+                    for(var type in parseObj[caption]) {
+                        var sum = 123456;
+                        typeObj = parseObj[caption][type];
+                        $("#info1").text("旅店数量");
+                        $("#info2").text("总入住流量");
+                        $("#num1").text(typeObj["旅店数量"]);
+                        $("#num2").text(sum);
+                    }
+                }
+            }else {
+                for(var caption in parseObj) {
+                    $(".h-Title").text(caption+"上网人次");
+                    for(var type in parseObj[caption]) {
+                        var sum = 123456;
+                        typeObj = parseObj[caption][type];
+                        $("#info1").text("网吧数量");
+                        $("#info2").text("总上网人次");
+                        $("#num1").text(typeObj["网吧数量"]);
+                        $("#num2").text(sum);
+                    }
+                }
+            }
+            return typeObj;
+        }
+
+        var data = json1.yAxis;
+        json1.xAxis = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+        for(var i=data.length;i<json1.xAxis.length;i++) {
+            data.push('')
+        }
+        var Item = function(){
+            return {
+                type:'line',
+                smooth: false,
+                showSymbol: false,
+                itemStyle: {
+                    normal: {
+                        label : {
+                            show: true,
+                            textStyle: {
+                                color: '#fff',
+                                fontSize:12
+                            }
+                        },
+                        areaStyle: {
+                            type: 'default',
+                            color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: 'rgba(5,119,255,0.8)'},
+                                        {offset: 0.5, color: 'rgba(5,119,255,0.5)'},
+                                        {offset: 0.9, color: 'rgba(5,119,255,0.2)'}
+                                    ]
+                            )
+                        },
+                        color: '#63DBEC'
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        width:1,
+                        color:'rgb(55,158,218)'
+                    }
+                },
+                data:[]
+            }
+        };
+        var xAxisData = json1.xAxis;
+        var showData = json1.yAxis;
+        var Series = [];
+
+        var it = new Item();
+        it.name = '';
+        it.data = showData;
+        for(var n=it.data.length;n<xAxisData.length;n++) {
+            it.data.push('');
+        }
+        Series.push(it);
+
+        option.series = Series;
+        option.xAxis[0].data = xAxisData;
+        myChart.setOption(option);
+    }
+
+
+    var testObj = {
+        id: 1,
+        code: "101201010000"
+    };
+
+    mystartInterval(testObj);
+</script>
+</body>
+</html>

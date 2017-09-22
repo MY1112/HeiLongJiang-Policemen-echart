@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>subjectButton</title>
+    <script src="jquery-1.7.1.min.js"></script>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    a {
+        border: 0;
+        text-decoration: none;
+    }
+
+    body {
+        background-color: rgba(0,0,0,0);
+        font: 12px/180% Arial;
+    }
+
+    #subjectButton {
+        width: 100%;
+    }
+
+    #firstSubject {
+        height: 40px;
+        width: 100%;
+        text-align: center;
+    }
+
+    #horizontal {
+        margin-top: 10px;
+        height: 40px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .brand a {
+        margin-left: 22px;
+        display: inline-block;
+        position: relative;
+        height: 40px;
+        text-align: center;
+    }
+
+    .brand .img {
+        color: #ffffff;
+        height: 30px;
+        line-height: 30px;
+        /*background-image: url(resource/btn.png);*/
+        /*background-size: 100% 100%;*/
+    }
+
+    .top-button {
+        cursor: pointer;
+        height: 40px;
+        margin-left: 22px;
+        background-image: url(resource/btn.png);
+        background-size: 100% 100%;
+        color: #ffffff;
+        display: inline-block;
+        line-height: 40px;
+    }
+
+    .top-button:hover {
+        background-image: url(resource/btn_on.png);
+    }
+
+    .active{
+        background-image: url(resource/btn_on.png);
+    }
+</style>
+<body>
+<div id="subjectButton">
+    <div id="firstSubject">
+    </div>
+    <div id="horizontal" class="brand horizontal">
+    </div>
+</div>
+</body>
+<script>
+    /**
+     * Created by uinnova on 2017/9/20.
+     */
+
+    var json = {
+        "type": 1,
+        "config": {
+            "sub1": {
+                "name": '主题一',
+                "subjectValue": 1,
+                "width": 100,
+                "secondSubject": {
+                    "sec1": {
+                        "name": '二级一',
+                        "subjectValue": 21,
+                        "width": 80
+                    },
+                    "sec2": {
+                        "name": '二级二',
+                        "subjectValue": 22,
+                        "width": 80
+                    }
+                }
+            },
+            "sub2": {
+                "name": '主题二',
+                "subjectValue": 2,
+                "width": 100,
+                "secondSubject": {
+                    "sec1": {
+                        "name": '2二级一',
+                        "subjectValue": 21,
+                        "width": 80
+                    },
+                    "sec2": {
+                        "name": '2二级二',
+                        "subjectValue": 22,
+                        "width": 80
+                    }
+                }
+            },
+            "sub3": {
+                "name": '主题三',
+                "subjectValue": 3,
+                "width": 100,
+                "secondSubject": {}
+            },
+            "sub4": {
+                "name": '主题四',
+                "subjectValue": 4,
+                "width": 100,
+                "secondSubject": {}
+            }
+        }
+    };
+
+    var domList = [];
+    var secondDomList = [];
+    var secondButtonList = {};
+    var nowSubjectValue = '';
+    var nextState = 1;
+
+    function initHtml(obj) {
+        var json = null;
+        json = obj.config;
+
+
+        var i = 0;
+        var firstNum = Object.getOwnPropertyNames(json).length;
+        var firstWidth = $("#firstSubject").width();
+        var html = '';
+        var html2 = '';
+        for(var item in json) {
+            secondButtonList[json[item].subjectValue] = json[item].secondSubject;
+            if(i == 0) {
+                html += '<a id="'+json[item].subjectValue+'" class="top-button active" onclick="runPage('+json[item].subjectValue+')" style="width:'+json[item].width+'px">'+json[item].name+'</a>'
+            }else {
+                html2 += '<a id="'+json[item].subjectValue+'" class="top-button" onclick="runPage('+json[item].subjectValue+')" style="width:'+json[item].width+'px">'+json[item].name+'</a>'
+            }
+            i++;
+        }
+        $("#firstSubject").append(html+html2);
+        for(var info in json) {
+            domList.push(document.getElementById(json[info].subjectValue));
+        }
+    }
+
+    function runPage(e) {
+        if(e != nowSubjectValue) {
+            $('#horizontal').empty();
+            nowSubjectValue = e;
+            var html = '';
+            idArr = [];
+            for (var i = 0; i < domList.length; i++) {
+                if (domList[i].id == e) {
+                    domList[i].className = "top-button active";
+                    var json = secondButtonList[e];
+                    for (var item in json) {
+                        html += '<a id="img'+json[item].subjectValue+'" class="img top-button" style="width:' + json[item].width + 'px" onclick="updatePage(' + json[item].subjectValue + ')">'+json[item].name + '</a>'
+                    }
+                    $('#horizontal').append(html);
+                    for (var info in json) {
+                        secondDomList.push(document.getElementById("img" + json[info].subjectValue));
+                    }
+                    nextState = 1;
+                    rotateAnimation();
+//                callbackFirst(e);
+                } else {
+                    domList[i].className = "top-button";
+                }
+            }
+        }else {
+            rotateAnimation();
+        }
+    }
+
+    function updatePage(e) {
+        for(var i = 0; i < secondDomList.length; i ++){
+            if(secondDomList[i].id.slice(3) == e){
+                secondDomList[i].className = "img top-button active";
+//                callbackSecond(e)
+            }else{
+                secondDomList[i].className = "img top-button";
+            }
+
+        }
+    }
+
+    function rotateAnimation() {
+        switch (nextState) {
+                case 1:
+                    $('.img').hide(0);
+                    $('.img').slideDown(300);
+                    nextState = 0;
+                    break;
+                case 0:
+                    $('.img').slideUp(300);
+                    nextState = 1;
+        }
+    }
+
+
+
+    initHtml(json);
+
+</script>
+</html>

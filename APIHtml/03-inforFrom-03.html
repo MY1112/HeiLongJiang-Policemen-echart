@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DC Resources Utilization</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/data-request.js"></script>
+</head>
+
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class="icon"></i>
+            <span class="h-Title">案件总量<i class="tip"></i></span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <!--<i class="item left-top"></i>
+        <i class="item left-bottom"></i>
+        <i class="item right-top"></i>
+        <i class="item right-bottom"></i>-->
+    </div>
+</div>
+</body>
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        data: {
+            xAxis: ['1月', '2月', '3月', '4月','5月','6月', '7月', '8月'],
+            showData: {
+                '刑事案件 ': [81, 97, 73, 85, 78, 89, 79, 93],
+                '行政案件 ': [143, 127, 175, 173, 177, 198, 179, 183]
+            }
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+
+    var option = {
+        grid: {
+            top: '10%',
+            right: '20%',
+            bottom: '0%',
+            left: '-5%',
+            containLabel: true
+        },
+        "title": {
+            "text": '案件总量',
+            "top": '45%',
+            "right": 'right',
+            "subtext": '',
+            "textStyle": {
+                "fontWeight": 'normal',
+                "fontSize": 16,
+                "color": "rgb(255,255,255)"
+            },
+            "subtextStyle": {
+                "align": 'left',
+                "fontWeight": 'normal',
+                "fontSize": 16,
+                "color": "rgb(255,255,255)"
+            }
+        },
+        legend: {
+            orient: 'vertical',
+            icon: 'rect', //设置图例的图形形状，circle为圆，rect为矩形
+            itemWidth: 8, //图例标记的图形宽度[ default: 25 ]
+            itemHeight: 8, //图例标记的图形高度。[ default: 14 ]
+            itemGap: 13, //图例每项之间的间隔。横向布局时为水平间隔，纵向布局时为纵向间隔。[ default: 10 ]
+            data: [],
+            right: 'right',
+            top: '10%',
+            textStyle: {
+                fontSize: 12,
+                color: '#F1F1F3'
+            },
+            selectedMode: true
+
+        },
+        tooltip : {//鼠标悬浮弹窗提示
+            /*  trigger: 'axis' */
+            trigger : 'item',
+            show:true,
+            showDelay: 0,
+            hideDelay: 0,
+            transitionDuration:0,
+            backgroundColor : 'rgba(4, 72, 153, 0.5)',
+            borderColor : 'rgba(4, 72, 153, 0.5)',
+            borderRadius : 8,
+            borderWidth: 2,
+            padding: 10,    // [5, 10, 15, 20]
+            formatter: function (params,ticket,callback) {
+                var res =params.data.value;
+                return res;
+            }
+        },
+        xAxis: [{
+            type: 'category',
+            data: [],
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 14
+                },
+                formatter:function(params){
+                    var newParamsName = "";// 最终拼接成的字符串
+                    var paramsNameNumber = params.length;// 实际标签的个数
+                    var provideNumber = 6;// 每行能显示的字的个数
+                    var rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+                    /**
+                     * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+                     */
+                    // 条件等同于rowNumber>1
+                    if (paramsNameNumber > provideNumber) {
+                        /** 循环每一行,p表示行 */
+                        for (var p = 0; p < rowNumber; p++) {
+                            var tempStr = "";// 表示每一次截取的字符串
+                            var start = p * provideNumber;// 开始截取的位置
+                            var end = start + provideNumber;// 结束截取的位置
+                            // 此处特殊处理最后一行的索引值
+                            if (p == rowNumber - 1) {
+                                // 最后一次不换行
+                                tempStr = params.substring(start, paramsNameNumber);
+                            } else {
+                                // 每一次拼接字符串并换行
+                                tempStr = params.substring(start, end) + "\n";
+                            }
+                            newParamsName += tempStr;// 最终拼成的字符串
+                        }
+
+                    } else {
+                        // 将旧标签的值赋给新标签
+                        newParamsName = params;
+                    }
+                    //将最终的字符串返回
+                    return newParamsName
+
+                }
+            },
+            axisTick: {
+                show:false
+            },
+            axisLine: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            }
+        }],
+        yAxis: [{
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            splitLine:{
+                show:false
+            },
+            axisLabel: {
+                show:false
+            }
+        }],
+        series: [
+                {
+                    name: '',
+                    type: 'bar',
+                    barCategoryGap: '50%',
+                    data: [],
+                    barGap: 0,
+                    itemStyle:{
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0, color: '#01D1F5'  },
+                                {
+                                    offset: 1, color: '#057AFE'
+                                }], false)
+                        }
+                    }
+                },
+                {
+                    name: '',
+                    type: 'bar',
+                    data: [],
+                    barGap: 0,
+                    itemStyle:{
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0, color: '#A1FEF9'  },
+                                {
+                                    offset: 1, color: '#00FEEF'
+                                }], false)
+                        }
+                    }
+                }
+        ]
+    };
+    var myChart = echarts.init(document.getElementById('charts'));
+
+    function initHtml(changeObj,obj) {
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        var xAxisData = [];
+        var xAxis = json.xAxis;
+        var showData = json.showData;
+        var data1 = {};
+        var data2 = {};
+        var legend = [];
+        var sumArr = [];
+        var sumAll = 0;
+        var itemValue = 0;
+        for (var item in showData) {
+            xAxisData.push(showData[item]);
+            legend.push(item);
+            option.series[itemValue].name = item;
+            itemValue++;
+            var sumValue = 0;
+            for(var m = 0; m < showData[item].length; m++) {
+                sumValue += showData[item][m];
+            }
+            sumArr.push(sumValue);
+        }
+        for(var n = 0; n < sumArr.length; n++) {
+            sumAll += sumArr[n];
+        }
+        for(var i=0;i<xAxis.length;i++) {
+            data1[xAxis[i]] = xAxisData[0][i];
+            data2[xAxis[i]] = xAxisData[1][i];
+        }
+        option.series[0].data = Object.keys(data1).map(function (key,index) {
+            return {
+                name: key,
+                value: data1[key],
+                itemStyle:{
+                    normal: {
+                        barBorderRadius:[10, 10, 0, 0],
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0, color: '#01D1F5'  },
+                            {
+                                offset: 1, color: '#057AFE'
+                            }], false)
+                    }
+                }
+            }
+        });
+        option.series[1].data = Object.keys(data2).map(function (key,index) {
+            return {
+                name: key,
+                value: data2[key],
+                itemStyle:{
+                    normal: {
+                        barBorderRadius:[10, 10, 0, 0],
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0, color: '#ffffff'  },
+                            {
+                                offset: 1, color: '#00FEEF'
+                            }], false)
+                    }
+                }
+            }
+        });
+
+        option.title.subtext = toThousands(sumAll);
+        option.legend.data = legend;
+        option.xAxis[0].data = xAxis;
+        myChart.setOption(option)
+
+    }
+
+    function toThousands(num) {
+        var num = (num || 0).toString(), result = '';
+        while (num.length > 3) {
+            result = ',' + num.slice(-3) + result;
+            num = num.slice(0, num.length - 3);
+        }
+        if (num) {
+            result = num + result;
+        }
+        return result;
+    }
+
+
+    mystartInterval({id: 1, code: ""});
+
+</script>
+
+</html>

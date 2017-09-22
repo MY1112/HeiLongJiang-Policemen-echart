@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>性别分布</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../chartsjs/pie.js"></script>
+    <script src="../js/data-request.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title">性别分布</span>
+            <div class="bottomLine"></div>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <!--<i class="item left-top"></i>-->
+        <!--<i class="item left-bottom"></i>-->
+        <!--<i class="item right-top"></i>-->
+        <!--<i class="item right-bottom"></i>-->
+    </div>
+</div>
+
+
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        data: {
+            '总人口': {
+                '男': '1085',
+                '女': '864'
+            },
+            '常驻人口': {
+                '男': '385',
+                '女': '304'
+            },
+            '暂住人口': {
+                '男': '285',
+                '女': '264'
+            },
+            '重点人口': {
+                '男': '205',
+                '女': '254'
+            }
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+    var  populationType = {
+        '1': '总人口',
+        '2': '常驻人口',
+        '3': '暂住人口',
+        '4': '重点人口'
+    };
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+
+    function initHtml(changeObj,obj) {
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data[populationType[changeObj.id]];
+        } else {
+            json = obj.data[populationType[changeObj.id]];
+        }
+        $(".h-Title").text(populationType[changeObj.id]);
+        Pie(myChart, json, {radius: ['0%', '52%']})
+    }
+
+
+    mystartInterval({id: 1, code: ""});
+
+</script>
+</body>
+</html>

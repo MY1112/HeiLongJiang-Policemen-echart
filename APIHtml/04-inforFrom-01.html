@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/data-request.js"></script>
+    <script src="../js/floatingcarousel.min.js"></script>
+    <style>
+
+        #chart1 {
+            height: 43%;
+        }
+
+        #chart2 {
+            margin-top: 3%;
+            height: 43%;
+        }
+
+
+        .tip {
+            list-style: none;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap:wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .tip li {
+            height: 100%;
+            width: 17%;
+            margin-left: 1%;
+            background-image:-webkit-linear-gradient(to right, rgb(1,45,95), rgba(0,0,0,0));
+            background-image:linear-gradient(to right,rgb(1,45,95),rgba(0,0,0,0));
+            position: relative;
+            display: flex;
+            flex-wrap:wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+        li span {
+            font-size: 14px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            /*padding: 10% 0;*/
+        }
+
+        li:first-child{
+            color: #fff;
+        }
+
+        li:nth-child(2){
+            color: #fff;
+        }
+
+        li:nth-child(3){
+            color: #fff;
+        }
+        li:nth-child(3){
+            color: #fff;
+        }
+        li:nth-child(4){
+            color: #fff;
+        }
+        li:nth-child(5){
+            color: #fff;
+        }
+        li:nth-child(6){
+            color: #fff;
+        }
+        li:nth-child(7){
+            color: #fff;
+        }
+        li:nth-child(8){
+            color: #fff;
+        }
+        li:nth-child(9){
+            color: #fff;
+        }
+        li:nth-child(10){
+            color: #fff;
+        }
+        li:nth-child(11){
+            color: #fff;
+        }
+        li:nth-child(12){
+            color: #fff;
+        }
+        li:nth-child(13){
+            color: #fff;
+        }
+        li:nth-child(14){
+            color: #fff;
+        }
+        li:nth-child(15){
+            color: #fff;
+        }
+        li span:last-child {
+            color: white;
+            font-size: 25px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title">各市涉稳统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts">
+            <div id="chart1">
+                <ul id="tip1" class="tip">
+                </ul>
+            </div>
+            <div id="chart2">
+                <ul id="tip2" class="tip">
+                </ul>
+            </div>
+        </div>
+        <!--图标部分 end-->
+    </div>
+</div>
+
+
+<script>
+
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "post",
+        url: "http://192.168.1.124:1532/rest/screen/involvingsteady",
+        data: JSON.stringify({"type":"1","code":""}),
+        dataType: "JSON"
+    };      // ajax请求参数
+    var json = {
+        data: {
+            '哈尔滨': '5',
+            '齐齐哈尔': '2',
+            '鸡西': '23',
+            '鹤岗': '77',
+            '双鸭山': '23',
+            '大庆': '23',
+            '伊春': '23',
+            '佳木斯': '23',
+            '抚远': '23',
+            '七台河': '23',
+            '牡丹江': '23',
+            '绥芬河': '23',
+            '黑河': '23',
+            '绥化': '23',
+            '大兴安岭': '23'
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(data);
+            });
+        }else{
+            //测试数据
+            initHtml(json);
+        }
+    }
+
+
+    function initHtml(obj) {
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+
+        var htmlFirst = '';
+        var htmlLast = '';
+        var newData = [];
+        for (var item in json) {
+            newData.push([item, json[item]])
+        }
+
+        for (var i=0;i<8;i++) {
+            htmlFirst +='<li><div><span class="name">'+newData[i][0]+'</span><span class="value">'+newData[i][1]+'</span></div></li>'
+        }
+
+        for (var j=8;j<15;j++) {
+            htmlLast +='<li><div><span class="name">'+newData[j][0]+'</span><span class="value">'+newData[j][1]+'</span></div></li>'
+        }
+
+        $('#tip1').html(htmlFirst);
+
+        $('#tip2').html(htmlLast);
+
+        $('#chart1').floatingCarousel({
+            autoScroll : true,
+            autoScrollDirection : 'right',
+            autoScrollSpeed : 20000,
+            scrollSpeed : 'fast'
+        });
+        $('#chart2').floatingCarousel({
+            autoScroll : true,
+            autoScrollDirection : 'left',
+            autoScrollSpeed : 20000,
+            scrollSpeed : 'fast'
+        });
+    }
+
+
+    mystartInterval({id: 1, code: ""});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+body,html,div,p,span,i,s,ul,li{
+    margin: 0;
+    padding: 0;
+    font-family: '微软雅黑'
+}
+body,html {
+    height: 100%;
+    width: 100%;
+	overflow:hidden;
+    background-color: rgba(0,0,0,0.5);
+}
+ul {
+    list-style: none;
+}
+i {
+    font-style: normal;
+}
+.projectBox {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    border: 0;
+    padding: 2px;
+}
+.infoForm {
+    height: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    /*background: rgba(12, 18, 39, 0.1);*/
+    border: 0;
+    position: relative;
+}
+/*.projectBox .infoForm:after {*/
+    /*content: " ";*/
+    /*display: block;*/
+    /*position: absolute;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*background-color: #101529;*/
+    /*border: 4px solid #0E1B2C;*/
+    /*border-radius: 3px;*/
+    /*left: 8px;*/
+    /*top: 8px;*/
+    /*z-index: -1;*/
+/*}*/
+.infoForm .nav {
+    width: 100%;
+    font-size: 16px;
+    color: #fff;
+    padding-bottom: 10px;
+    /*border-bottom: 2px solid #00FFFF;*/
+    padding-left: 10px;
+    position: relative;
+}
+.infoForm .nav .icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background: url('../images/ico_01.png') no-repeat;
+    -webkit-background-size:100% 100%;    position: absolute;
+    top: 2px;
+    left: -12px;
+}
+
+.infoForm .nav span .tip {
+   font-size: 14px;
+    color: #00e89b;
+    margin-left: 10px;
+}
+
+.infoForm .item {
+    position: absolute;
+    width: 15px;
+    height: 12px;
+    z-index: 99;
+}
+
+/*边角样式*/
+.infoForm .left-top {
+    border-top: 4px solid #387ba2;
+    border-left: 4px solid #387ba2;
+    top: -4px;
+    left: -4px;
+}
+
+.infoForm .left-bottom {
+    border-bottom: 4px solid #387ba2;
+    border-left: 4px solid #387ba2;
+    bottom: -4px;
+    left: -4px;
+}
+
+.infoForm .right-top {
+    border-top: 4px solid #387ba2;
+    border-right: 4px solid #387ba2;
+    top: -4px;
+    right: -4px;
+}
+
+.infoForm .right-bottom {
+    border-bottom: 4px solid #387ba2;
+    border-right: 4px solid #387ba2;
+    bottom: -4px;
+    right: -4px;
+}
+/*三角样式
+.infoForm .left-top {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width:0;
+    height:0;
+    border-top:10px solid #51B6E4;
+    border-bottom:10px solid transparent;
+    border-right:10px solid transparent;
+}
+.infoForm .left-bottom {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width:0;
+    height:0;
+    border-top:10px solid transparent;
+    border-bottom:10px solid #51B6E4;
+    border-right:10px solid transparent;
+}
+.infoForm .right-top {
+    position: absolute;
+    right: 0;
+    top:0;
+    width:0;
+    height:0;
+    border-top:10px solid #51B6E4;
+    border-bottom:10px solid transparent;
+    border-left:10px solid transparent;
+}
+.infoForm .right-bottom {
+    position: absolute;
+    right: 0;
+    bottom:0;
+    width:0;
+    height:0;
+    border-top:10px solid transparent;
+    border-bottom:10px solid #51B6E4;
+    border-left:10px solid transparent;
+}
+
+
+/*图标框的样式*/
+.infoForm #charts {
+    width: 100%;
+    height: 90%;
+}

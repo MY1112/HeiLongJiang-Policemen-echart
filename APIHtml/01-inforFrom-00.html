@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/data-request.js"></script>
+    <style>
+        .infoForm #charts {
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style: none;
+        }
+        #charts {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap:wrap;
+            color: #fff;
+        }
+        #charts li {
+            width: 100%;
+            font-size: 13px;
+            display: -webkit-flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        #charts li .year, #charts li .num {
+            font-size: 25px;
+        }
+
+        #charts li .valueText {
+            width: 40%;
+        }
+
+        #charts li .peopleText {
+            width: 60%;
+        }
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class="icon"></i>
+            <span class="h-Title">黑龙江省人口总数量</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <ul id="charts">
+            <li><span class="valueText"><span class="year"></span>年</span><span class="peopleText"><span class="num"></span>万人</span></li>
+        </ul>
+        <!--图标部分 end-->
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+
+    //测试数据
+    var json = {
+        data: {
+            people: 3812,
+            year: 2017
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+    function initHtml(changeObj,obj) {
+        $(".year").html(obj.data.year);
+        $(".num").html(obj.data.people.toFixed(2));
+    }
+
+    mystartInterval({id: 1, code:""});
+</script>
+</html>

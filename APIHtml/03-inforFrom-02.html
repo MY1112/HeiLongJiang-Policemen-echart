@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Energy Analysis</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/echarts-liquidfill.js"></script>
+</head>
+<style>
+    .infoForm #charts {
+        height: 35%;
+    }
+    #chartPies {
+        list-style: none;
+        width: 100%;
+        height: 55%;
+        display: flex;
+        display: -webkit-flex;
+        justify-items: center;
+        align-items: center;
+    }
+
+    #chartPies li {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        display: -webkit-flex;
+        justify-items: center;
+        align-items: center;
+    }
+
+    #chartPies li span {
+        flex: 1;
+        display: block;
+        height: 100%;
+    }
+
+    #charts ul {
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        list-style: none;
+    }
+    #charts ul {
+        float: left;
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-around;
+        align-items: center;
+        color: #fff;
+    }
+    #charts li {
+        width: 50%;
+        font-size: 16px;
+        color: #ffffff;
+    }
+
+    #charts li .num {
+        margin-top: 5px;
+        font-size: 25px;
+        color: #ffffff;
+    }
+
+    #charts li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap:wrap;
+    }
+
+    #charts li span{
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+</style>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <div class="navTxt">
+                <span class="h-Title">破案率统计</span>
+            </div>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <ul id="chartPies">
+            <li><span id="charts1" class="pie"></span></li>
+            <li><span id="charts2" class="pie"></span></li>
+        </ul>
+        <div id="charts">
+            <ul id="tables">
+            </ul>
+        </div>
+        <!--图标部分 end-->
+    </div>
+</div>
+</body>
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        "data": {
+            "charts": {
+                "刑事案件破案率": 0.59,
+                "重大案件破案率": 0.56
+            },
+            infos: [
+                {name:'重大案件',value:3647},
+                {name:'刑事案件',value:6136},
+                {name:'案件总量',value:9783}
+            ]
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+
+   var chart1 = document.getElementById('charts1');
+   var myChart1 = echarts.init(chart1);
+
+   var chart2 = document.getElementById('charts2');
+   var myChart2 = echarts.init(chart2);
+
+
+   var option1 = {
+       "title": {
+           "text": '刑事案件破案率',
+           "top": '80%',
+           "left": 'left',
+           "textStyle": {
+               "fontSize": 14,
+               "color": "rgb(255,255,255)"
+           }
+       },
+       series: [{
+           type: 'liquidFill',
+           data: [],
+           radius: '70%',
+           center: ['25%', '40%'],
+           amplitude: 2,
+           label: {
+               normal: {
+                   textStyle: {
+                       fontSize: 20
+                   }
+               }
+           },
+           outline: {
+               show: false
+           }
+       }]
+   };
+   var option2 = {
+       "title": {
+           "text": '重大案件破案率',
+           "top": '80%',
+           "left": 'left',
+           "textStyle": {
+               "fontSize": 14,
+               "color": "rgb(255,255,255)"
+           }
+       },
+       series: [{
+           type: 'liquidFill',
+           data: [],
+           radius: '70%',
+           center: ['25%', '40%'],
+           amplitude: 2,
+           label: {
+               normal: {
+                   textStyle: {
+                       fontSize: 20
+                   }
+               }
+           },
+           outline: {
+               show: false
+           }
+       }]
+   };
+
+   function initHtml(changeObj,obj) {
+       if (obj == null && obj == undefined) {
+           //alert('数据不能为空');
+           return false;
+       }
+       var json = null;
+       if (typeof obj == "string") {
+           json = JSON.parse(obj).data;
+       } else {
+           json = obj.data;
+       }
+
+       var infos = json.infos;
+       var htmlInfo = '';
+       for(var i=0;i<infos.length;i++) {
+           htmlInfo +='<li><span class="info">'+infos[i].name+'</span><span class="num">'+infos[i].value.toLocaleString()+'</span></li>'
+       }
+       $('#tables').html(htmlInfo);
+
+       var value2 = [];
+       for(var item in json.charts) {
+           var value1 = [];
+           value1.push(json.charts[item]);
+           value2.push(value1);
+       }
+
+       option1.series[0].data = value2[0];
+       option2.series[0].data = value2[1];
+       myChart1.setOption(option1);
+       myChart2.setOption(option2);
+   }
+
+
+    mystartInterval({id: 1, code: ""});
+
+
+
+</script>
+
+</html>

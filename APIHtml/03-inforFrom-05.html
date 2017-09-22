@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>03-弹窗</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/echarts-liquidfill.js"></script>
+    <script src="../chartsjs/pie1.js"></script>
+    <script src="../js/data-request.js"></script>
+    <style>
+        body,html {
+            background-color: rgba(0,80,149,0.5);
+        }
+        .projectBox {
+            border: 1px solid rgb(39,105,164);
+        }
+
+        #charts #lines {
+            height: 95%;
+            width: 100%;
+        }
+
+        #charts #lines {
+            list-style: none;
+        }
+
+        #lines li{
+            float: left;
+            width: 100%;
+        }
+
+        #charts1 {
+            height: 50%;
+        }
+
+        #chartPies {
+            list-style: none;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            display: -webkit-flex;
+            justify-items: center;
+            align-items: center;
+        }
+
+        #chartPies li {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            display: -webkit-flex;
+            justify-items: center;
+            align-items: center;
+        }
+
+        #chartPies li span {
+            flex: 1;
+            display: block;
+            height: 100%;
+        }
+
+        #charts2 {
+            height: 50%;
+            width: 100%;
+            float: left;
+        }
+
+        #charts2 ul {
+            height: 100%;
+            width: 33%;
+            box-sizing: border-box;
+            list-style: none;
+            float: left;
+            color: #ffffff
+        }
+        #charts2 ul li {
+            width: 100%;
+            height: 50%;
+            font-size: 14px;
+            flex-wrap: wrap;
+            display: flex;
+        }
+
+        #charts2 li .num {
+            margin-top: 2px;
+            font-size: 24px;
+        }
+        #charts2 li .num i {
+            margin-top: 2px;
+            font-size: 10px;
+        }
+
+        #charts2 li span{
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title"></span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts">
+            <ul id="lines">
+                <li id="charts2">
+                </li>
+                <li id="charts1">
+                    <ul id="chartPies">
+                        <li><span id="charts3" class="pie"></span></li>
+                        <li><span id="charts4" class="pie"></span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!--图标部分 end-->
+        <!--<i class="item left-top"></i>-->
+        <!--<i class="item left-bottom"></i>-->
+        <!--<i class="item right-top"></i>-->
+        <!--<i class="item right-bottom"></i>-->
+    </div>
+</div>
+
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        "data" : {
+            "哈尔滨市": {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '齐齐哈尔市': {
+                "charts": {
+                    "刑事案件破案率": 0.56,
+                    "重大案件破案率": 0.51
+                },
+                infos: [
+                    {name:'重大案件',value:387},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:253}
+                ]
+            },
+            '鸡西市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '鹤岗市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '双鸭山市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '大庆市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '伊春市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '佳木斯市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '抚远县': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '七台河市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '牡丹江市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.56
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '绥芬河市': {
+                "charts": {
+                    "刑事案件破案率": 0.49,
+                    "重大案件破案率": 0.51
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:539},
+                    {name:'行政案件',value:213}
+                ]
+            },
+            '黑河市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.59
+                },
+                infos: [
+                    {name:'重大案件',value:327},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:243}
+                ]
+            },
+            '绥化市': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.51
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:536},
+                    {name:'行政案件',value:273}
+                ]
+            },
+            '大兴安岭地区': {
+                "charts": {
+                    "刑事案件破案率": 0.53,
+                    "重大案件破案率": 0.57
+                },
+                infos: [
+                    {name:'重大案件',value:347},
+                    {name:'刑事案件',value:526},
+                    {name:'行政案件',value:243}
+                ]
+            }
+        },
+        "message" : {},
+        "success" : true
+    };
+    var cityCode = {
+        "101201010000": "哈尔滨市",
+        "101201020000": "齐齐哈尔市",
+        "101201030000": "牡丹江市",
+        "101201040000": "佳木斯市",
+        "101201050000": "大庆市",
+        "101201060000": "伊春市",
+        "101201070000": "鸡西市",
+        "101201080000": "鹤岗市",
+        "101201090000": "双鸭山市",
+        "101201100000": "七台河市",
+        "101201110000": "绥化市",
+        "101201120000": "黑河市",
+        "101201130000": "大兴安岭地区",
+        "101201150000": "绥芬河市",
+        "101201160000": "抚远县"
+    };
+
+    function mystartInterval(obj) {
+        if(ajax) {
+            if (obj == null && obj == undefined) {
+                //alert('数据不能为空');
+                return false;
+            }
+            var data = {'type': '5'};
+            var newObj = obj;
+            data.code = newObj.code;
+            options.data = JSON.stringify(data);
+            console.log(options)
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(data);
+            });
+        }else{
+            //测试数据
+            var parseObj = obj;
+            var caption = cityCode[parseObj.code];
+            var cityObj = json.data[caption];
+            var data = {};
+            var b = {};
+            b[caption] = cityObj;
+            data.data = b;
+            initHtml(data);
+        }
+    }
+
+
+
+    var chart1 = document.getElementById('charts3');
+    var myChart1 = echarts.init(chart1);
+
+    var chart2 = document.getElementById('charts4');
+    var myChart2 = echarts.init(chart2);
+
+
+    var option1 = {
+        "title": {
+            "text": '刑事案件破案率',
+            "top": '80%',
+            "left": 'center',
+            "textStyle": {
+                "fontSize": 14,
+                "color": "rgb(255,255,255)"
+            }
+        },
+        series: [{
+            type: 'liquidFill',
+            data: [],
+            radius: '60%',
+            center: ['50%', '50%'],
+            amplitude: 2,
+            label: {
+                normal: {
+                    textStyle: {
+                        fontSize: 20
+                    }
+                }
+            },
+            outline: {
+                show: false
+            }
+        }]
+    };
+    var option2 = {
+        "title": {
+            "text": '重大案件破案率',
+            "top": '80%',
+            "left": 'center',
+            "textStyle": {
+                "fontSize": 14,
+                "color": "rgb(255,255,255)"
+            }
+        },
+        series: [{
+            type: 'liquidFill',
+            data: [],
+            radius: '60%',
+            center: ['50%', '50%'],
+            amplitude: 2,
+            label: {
+                normal: {
+                    textStyle: {
+                        fontSize: 20
+                    }
+                }
+            },
+            outline: {
+                show: false
+            }
+        }]
+    };
+
+    function initHtml(obj) {
+        $("#charts2").empty();
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        var json1 = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data;
+            json1 = cahngeData();
+        } else {
+            json = obj.data;
+            json1 = cahngeData();
+        }
+        function cahngeData() {
+            var cityObj = {};
+
+            for(var caption in json) {
+                var sum = 123456;
+                $(".h-Title").text(caption+"案件情况: "+sum);
+                cityObj = json[caption];
+            }
+
+            var htmlinfo = "";
+            for(var m = 0; m < cityObj.infos.length; m++) {
+                var ratio = (100*cityObj.infos[m].value/sum).toFixed(2);
+                htmlinfo += '<ul><li><span class="info">'+cityObj.infos[m].name+'</span><span class="num">'+cityObj.infos[m].value+'</span></li>'+
+                        '<li><span class="info">占比</span><span class="num">'+ratio+'<i>%</i></span></li></ul>'
+            }
+            $("#charts2").append(htmlinfo);
+            return cityObj.charts;
+        }
+
+        var value2 = [];
+        for(var item in json1) {
+            var value1 = [];
+            value1.push(json1[item]);
+            value2.push(value1);
+        }
+
+        option1.series[0].data = value2[0];
+        option2.series[0].data = value2[1];
+        myChart1.setOption(option1);
+        myChart2.setOption(option2);
+    }
+
+
+    var testObj = {
+        id: 1,
+        code: "101201010000"
+    };
+
+    mystartInterval(testObj);
+</script>
+</body>
+</html>

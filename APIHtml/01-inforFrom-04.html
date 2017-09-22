@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>重点人口分类</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/data-request.js"></script>
+    <style>
+        .tip {
+            position: absolute;
+            bottom: 42px;
+            left: 0px;
+            list-style: none;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tip li {
+            width: 79px;
+        }
+
+        .tip li i {
+            font-style: normal;
+            display: block;
+            font-size: 12px;
+            /*color: #fff;*/
+        }
+
+        .tip li i:last-child {
+            margin-top: 10px;
+            width: 79px;
+            height: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title">重点人口分类</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+    </div>
+</div>
+
+
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        data: {
+            '重点上访人员': '9807',
+            '涉稳人员': '5790',
+            '刑事犯罪前科人员': '3049',
+            '涉恐人员': '2399',
+            '吸毒人员': '1235',
+            '涉毒人员': '879',
+            '在逃人员': '234'
+        },
+        "message" : {},
+        "success" : true
+    };
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+
+
+    var grid = {
+        left:'0%',
+        right:'0%',
+        bottom:'1%',
+        top:'0%',
+        containLabel:true
+    };
+    var colors = ['rgb(255,255,255)','rgb(192,249,255)','rgb(169,219,255)','rgb(97,205,254)','rgb(34,185,254)','rgb(6,156,241)','rgb(19,109,232)'];
+    var fontSize = 16;
+
+    var option = {
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : <br/>{c} ({d}%)"
+        },
+        legend: {
+            //orient: 'horizontal'
+            //x: 'center',
+            //y:'bottom',
+            //textStyle:{
+            //    color:'#fff'
+            //},
+            //itemWidth:15,
+            //itemHeight:3,
+            //data: []
+        },
+        grid:grid,
+        series : [
+            {
+                color: colors,
+                type:'pie',
+                radius: ['40%', '70%'],
+                center: ['50%', '50%'],
+                data:[],
+                roseType: false,
+                label: {
+                    normal: {
+                        // show:false,
+                        formatter: function(params){
+                            if(params.name.length > 4){
+                                var name = params.name.substring(0,4) + '\n' + params.name.substring(4,params.name.length)
+                            }
+                            else{
+                                var name  = params.name;
+                            }
+                            return name + '\n' + params.value + '人';
+                        },
+                        textStyle: {
+                            //fontSize:fontSize,
+                            color:'#fff',
+                            fontFamily:'Microsft yahei',
+                            fontSize:'12'
+                        }
+                    }
+                },
+                labelLine: {
+                    normal: {
+                        // show:false,
+                        smooth: 0.2,
+                        length: 3,
+                        lineStyle: {
+                            color:"rgb(1,109,173)"
+                        }
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        borderWidth: 3,
+                        borderColor: 'rgba(12, 18, 39, 0.4)'
+                    }
+                },
+                animationType: 'scale',
+                animationEasing: 'elasticOut',
+                animationDelay: function () {
+                    return Math.random() * 200;
+                }
+            }
+        ]
+    };
+
+    function Pie(myChart,chartDatas,seriesType) {
+        // let {roseType = false, radius = ['0','40%']} = seriesType;
+        if(seriesType) {
+            var radius = [];
+            if(seriesType.radius) {
+                radius = seriesType.radius;
+            } else {
+                radius = ['0','40%'];
+            }
+            if(seriesType.roseType) {
+                var roseType = seriesType.roseType;
+            } else {
+                var roseType = false;
+            }
+        } else {
+            var roseType = false,
+                    radius = ['0','40%'];
+        }
+        var chartData = chartDatas;
+        //var lengend = [];
+        for(var item in chartData) {
+            var arrs= item;
+            //lengend.push(arrs);
+        }
+        //option.legend.data = lengend;
+        option.series[0].roseType = roseType;
+        option.series[0].radius = radius;
+        option.series[0].data = Object.keys(chartData).map(function (key) {
+            return {
+                // name: key + '(' + chartData[key] + ')',
+                name: key,
+                value: chartData[key]
+            }
+        }).sort(function (a, b) { return a.value - b.value; });
+
+        myChart.setOption(option);
+
+    }
+
+
+    function initHtml(changeObj,obj) {
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        Pie(myChart, json, {roseType: 'area', radius: ['15%', '70%']})
+    }
+
+    mystartInterval({id: 1, code: ""});
+</script>
+</body>
+</html>

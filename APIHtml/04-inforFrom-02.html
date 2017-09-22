@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/data-request.js"></script>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class="icon"></i>
+            <span class="h-Title">涉稳状态<i class="tip"></i></span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+    </div>
+</div>
+
+
+<script>
+
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "post",
+        url: "http://192.168.1.124:1532/rest/screen/involvingsteady",
+        data:JSON.stringify({"type":"2","code":""}),
+        dataType: "JSON"
+    };      // ajax请求参数
+    var json = {
+        data: {
+            '进京': 478,
+            '失控': 567,
+            '稳控': 4258,
+            "未核实": 44433,
+            "其他": 33321
+        },
+        "message" : {},
+        "success" : true
+    };
+
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(data);
+            });
+        }else{
+            //测试数据
+            initHtml(json);
+        }
+    }
+
+
+
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'line'
+            }
+        },
+        grid: {
+            top: '5%',
+            right: '10%',
+            bottom: '5%',
+            left: '0%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'value',
+                axisLabel: {
+                    show:false
+                },
+                axisLine: {
+                    show:false
+                },
+                axisTick:{
+                    show:false
+                },
+                splitLine: {
+                    show: false
+                }
+
+            }
+        ],
+        yAxis: [
+            {
+                type: 'category',
+                data: [],
+                axisLabel: {
+                    interval: 0,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: '12'
+                    }
+                },
+                axisTick:{
+                    show:false
+                },
+                axisLine: {
+                    show:false
+                },
+                zlevel:99
+
+            }
+        ],
+        series: [{
+            type: 'bar',
+            barCategoryGap: '60%',
+            itemStyle: {
+                normal: {
+                    barBorderRadius:[10, 10, 10, 10],
+                    color: new echarts.graphic.LinearGradient(
+                            0, 0, 1, 0,
+                            [
+                                {offset: 0, color: '#048BFE'},
+                                {offset: 1, color: '#00EEF1'}
+                            ]
+                    ),
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: function(params){
+                            return toThousands(params.value);
+                        },
+                        textStyle: {
+                            color: '#fff',
+                            fontSize: '14'
+                        }
+                    }
+                }
+            },
+            data: []
+        }],
+    };
+
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+
+    function initHtml(obj) {
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+
+        var chartData = json;
+        var xAxisData = [];
+        option.series[0].data = Object.keys(chartData).map(function (key) {
+            return {
+                name: key,
+                value: chartData[key],
+            }
+        }).sort(function (a, b) {
+            return a.value - b.value;
+        });
+        for (var i = 0; i < option.series[0].data.length; i++) {
+            xAxisData.push(option.series[0].data[i].name)
+        }
+        option.yAxis[0].data = xAxisData;
+        myChart.setOption(option);
+    }
+
+    function toThousands(num) {
+        var num = (num || 0).toString(), result = '';
+        while (num.length > 3) {
+            result = ',' + num.slice(-3) + result;
+            num = num.slice(0, num.length - 3);
+        }
+        if (num) {
+            result = num + result;
+        }
+        return result;
+    }
+
+
+    mystartInterval({id: 1, code: ""});
+</script>
+</body>
+</html>

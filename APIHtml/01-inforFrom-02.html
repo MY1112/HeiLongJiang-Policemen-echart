@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>交易成功率</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../chartsjs/pie.js"></script>
+    <script src="../js/data-request.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title">适龄人口统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+    </div>
+</div>
+
+
+<script>
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "",
+        url: "",
+        data: {},
+        dataType: ""
+    };      // ajax请求参数
+    var json = {
+        data: {
+            '总人口': {
+                '0-15岁': 1258,
+                '16-60岁': 1126,
+                '60岁以上': 1510
+            },
+            '常驻人口': {
+                '0-15岁': 458,
+                '16-60岁': 326,
+                '60岁以上': 310
+            },
+            '暂住人口': {
+                '0-15岁': 258,
+                '16-60岁': 226,
+                '60岁以上': 210
+            },
+            '重点人口': {
+                '0-15岁': 358,
+                '16-60岁': 376,
+                '60岁以上': 410
+            }
+        },
+        "message" : {},
+        "success" : true
+    };
+
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(obj, data);
+            });
+        }else{
+            //测试数据
+            initHtml(obj,json);
+        }
+    }
+
+
+    var  populationType = {
+        '1': '总人口',
+        '2': '常驻人口',
+        '3': '暂住人口',
+        '4': '重点人口'
+    };
+
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+
+    function initHtml(changeObj,obj) {
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if (typeof obj == "string") {
+            json = JSON.parse(obj).data[populationType[changeObj.id]];
+        } else {
+            json = obj.data[populationType[changeObj.id]];
+        }
+        $(".h-Title").text(populationType[changeObj.id]);
+        Pie(myChart, json, {radius: ['47%', '55%']})
+    }
+
+
+    mystartInterval({id: 1, code: ""});
+</script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>04-弹窗</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../chartsjs/pie1.js"></script>
+    <script src="../js/data-request.js"></script>
+    <style>
+        body,html {
+            background-color: rgba(0,80,149,0.5);
+        }
+        .projectBox {
+            border: 1px solid rgb(39,105,164);
+        }
+
+        #peopleNum {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            width: 145px;
+        }
+
+        #charts #tables {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap:wrap;
+            height: 95%;
+            width: 100%;
+            list-style: none;
+        }
+        #tables li{
+            height: 100%;
+        }
+        #charts1 {
+            width: 33.3%;
+        }
+        #charts2 {
+            width: 33.3%;
+        }
+        #charts3 {
+            width: 33.3%;
+        }
+        #charts1 div, #charts2 div, #charts3 div {
+            display: inline-block;
+            font-size: 16px;
+            color: #fff;
+            margin-left: 7px;
+        }
+
+        .icon2 {
+            width: 2px;
+            height: 14px;
+            display: inline-block;
+            background: url('../images/line2.png') no-repeat;
+            -webkit-background-size:100% 100%;
+        }
+
+        #charts1 ul, #charts2 ul, #charts3 ul {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap:wrap;
+            color: #fff;
+        }
+        #charts1 ul li, #charts2 ul li, #charts3 ul li {
+            margin-bottom: 5px;
+            width: 100%;
+            font-size: 13px;
+            display: -webkit-flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .lastTitle {
+            margin-bottom: 10px;
+        }
+
+        .num {
+            font-size: 13px;
+            color: #fff;
+        }
+
+        #charts1 ul li span, #charts2 ul li span, #charts3 ul li span {
+            width: 50%;
+            flex-wrap: wrap;
+        }
+        #charts1 ul li span:last-child, #charts2 ul li span:last-child, #charts3 ul li span:last-child {
+            width: 40%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <i class='icon'></i>
+            <span class="h-Title"></span>
+            <div id="peopleNum"></div>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts">
+            <ul id="tables">
+                <li id="charts1"></li>
+                <li id="charts2"></li>
+                <li id="charts3"></li>
+            </ul>
+        </div>
+        <!--图标部分 end-->
+        <!--<i class="item left-top"></i>-->
+        <!--<i class="item left-bottom"></i>-->
+        <!--<i class="item right-top"></i>-->
+        <!--<i class="item right-bottom"></i>-->
+    </div>
+</div>
+
+<script>
+
+    //测试接口开关
+    var ajax = false;  // true为打开接口数据，false为关闭接口数据
+    var options  = {
+        type: "post",
+        url: "http://192.168.1.124:1532/rest/screen/involvingsteady",
+        data: JSON.stringify({"type":"5","code":"101201010000"}),
+        dataType: "JSON"
+    };      // ajax请求参数
+    var json = {
+        "data" : {
+            "哈尔滨市": {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '齐齐哈尔市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '鸡西市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '鹤岗市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '双鸭山市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '大庆市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '伊春市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '佳木斯市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '抚远县': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '七台河市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '牡丹江市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '绥芬河市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '黑河市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '绥化市': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            },
+            '大兴安岭地区': {
+                "涉稳状态": {
+                    '进京': 58,
+                    '失控': 77,
+                    '稳控': 358,
+                    "未核实": 3433,
+                    "其他": 2321
+                },
+                "涉稳类型": {
+                    "群体上访":13016,
+                    "个体上访":21074
+                },
+                "管控级别": {
+                    'A类': 2123,
+                    'B类': 392,
+                    'C类': 299
+                }
+            }
+        },
+        "message" : {},
+        "success" : true
+    };
+    var cityCode = {
+        "101201010000": "哈尔滨市",
+        "101201020000": "齐齐哈尔市",
+        "101201030000": "牡丹江市",
+        "101201040000": "佳木斯市",
+        "101201050000": "大庆市",
+        "101201060000": "伊春市",
+        "101201070000": "鸡西市",
+        "101201080000": "鹤岗市",
+        "101201090000": "双鸭山市",
+        "101201100000": "七台河市",
+        "101201110000": "绥化市",
+        "101201120000": "黑河市",
+        "101201130000": "大兴安岭地区",
+        "101201150000": "绥芬河市",
+        "101201160000": "抚远县"
+    };
+
+
+    //测试方法
+    function mystartInterval(obj) {
+        if(ajax) {
+            if (obj == null && obj == undefined) {
+                //alert('数据不能为空');
+                return false;
+            }
+            var data = {'type': '5'};
+            var newObj = obj;
+            data.code = newObj.code;
+            options.data = JSON.stringify(data);
+            //接口数据
+            initPage(options, function (data) {
+                initHtml(data);
+            });
+        }else{
+            //测试数据
+            if (obj == null && obj == undefined) {
+                //alert('数据不能为空');
+                return false;
+            }
+            if (typeof obj == "string") {
+                var parseObj = JSON.parse(obj);
+            } else {
+                var parseObj = obj;
+            }
+            var caption = cityCode[parseObj.code];
+            var cityObj = json.data[caption];
+            cityObj.total = 123456;
+            var data = {};
+            var b = {};
+            b[caption] = cityObj;
+            data.data = b;
+            initHtml(data);
+        }
+    }
+
+
+
+    function initHtml(obj) {
+        $("#charts1").empty();
+        $("#charts2").empty();
+        $("#charts3").empty();
+        if (obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if (typeof obj == "string") {;
+            json = JSON.parse(obj).data;
+            cahngeData();
+        } else {
+            json = obj.data;
+            cahngeData();
+        }
+        function cahngeData() {
+            var cityObj = {};
+            for (var item in json) {
+                cityObj = json[item];
+
+                $(".h-Title").text(item);
+                $("#peopleNum").text("涉稳人员"+cityObj.total.toLocaleString());
+
+            }
+
+            delete cityObj.total;
+            var infoValue = 0;
+            for(var info in cityObj) {
+                infoValue++;
+                    var htmlinfo = "";
+                    var tilteHtml = '<i class="icon2"></i><div class="lastTitle">' + info + '</div><ul>';
+
+                    for (var type in cityObj[info]) {
+                        htmlinfo += '<li><span class="info">' + type + '</span><span class="num">' + cityObj[info][type] + '</span></li>'
+                    }
+                    var resultsHtml = tilteHtml + htmlinfo + '</ul>';
+                    $("#charts"+infoValue).append(resultsHtml);
+            }
+        }
+    }
+
+    var testObj = {
+        id: '',
+        code: "101201010000"
+    };
+
+    mystartInterval(JSON.stringify(testObj));
+</script>
+</body>
+</html>
